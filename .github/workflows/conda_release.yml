@@ -40,8 +40,12 @@ jobs:
       - name: Patch conda-recipe/meta.yaml
         run: |
           cd conda-recipe
-          sed -i "s/^  version: .*/  version: ${{ steps.vars.outputs.VERSION }}/" meta.yaml
-          sed -i "s/^  sha256: .*/  sha256: ${{ steps.vars.outputs.SHA256 }}/" meta.yaml
+          
+          # Replace the Jinja “{% set version = "..." %}” line:
+          sed -i "s|^{% set version = \".*\" %}|{% set version = \"${{ steps.vars.outputs.VERSION }}\" %}|" meta.yaml
+
+          # Replace the “  sha256: ...” line (two‐space indentation under source:)
+          sed -i "s|^  sha256: .*|  sha256: ${{ steps.vars.outputs.SHA256 }}|" meta.yaml
 
       # 5) Build the conda package
       - name: Build conda package
