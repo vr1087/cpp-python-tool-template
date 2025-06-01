@@ -22,6 +22,7 @@ build:
     host:
       - python
       - pip
+      - setuptools
       - scikit-build
     run:
       - python
@@ -33,12 +34,8 @@ build:
     cmake --build . --parallel ${CPU_COUNT:-1}
     cmake --install . --prefix $PREFIX
     cd ..
-    python -m pip install . \
-      --no-deps \
-      --ignore-installed \
-      --no-build-isolation \
-      --no-use-pep517 \
-      -vv
+    # This bypasses PEP 517 and uses setuptools directly
+    python setup.py install --single-version-externally-managed --record=record.txt
 
 about:
   home: <PLACEHOLDER>
