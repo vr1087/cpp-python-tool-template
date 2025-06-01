@@ -11,9 +11,6 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    env:
-      # Make sure parallel builds use all available cores
-      NUM_CORES: ${{ runner.ncpu }}
 
     steps:
       - name: Check out repository
@@ -29,16 +26,15 @@ jobs:
           sudo apt-get install -y build-essential cmake git python3-dev python3-pip
 
       - name: Configure and build C++ code
-        working-directory: ${{ github.workspace }}
         run: |
           mkdir -p build
           cd build
           cmake .. -DCMAKE_BUILD_TYPE=Release
-          cmake --build . --parallel "${NUM_CORES}"
+          cmake --build . --parallel $(nproc)
 
       - name: Run C++ unit tests with CTest
-        working-directory: ${{ github.workspace }}/build
         run: |
+          cd build
           ctest --output-on-failure
 
       # -----------------------------
@@ -57,13 +53,11 @@ jobs:
           python -m pip install --upgrade pip setuptools scikit-build pytest
 
       - name: Install package (C++ + Python wrapper) via pip
-        working-directory: ${{ github.workspace }}
         run: |
           source venv/bin/activate
           pip install .
 
       - name: Run Python unit tests
-        working-directory: ${{ github.workspace }}
         run: |
           source venv/bin/activate
           pytest -q
