@@ -41,11 +41,23 @@ jobs:
         run: |
           cd conda-recipe
           
+          # Get OWNER (the part before the slash in GITHUB_REPOSITORY)
+          OWNER=${GITHUB_REPOSITORY%%/*}
+        
           # Replace the Jinja “{% set version = "..." %}” line:
           sed -i "s|^{% set version = \".*\" %}|{% set version = \"${{ steps.vars.outputs.VERSION }}\" %}|" meta.yaml
 
           # Replace the “  sha256: ...” line (two‐space indentation under source:)
           sed -i "s|^  sha256: .*|  sha256: ${{ steps.vars.outputs.SHA256 }}|" meta.yaml
+          
+          # Update the source URL to use the real owner and version
+          #    Original line looks like:
+          #      url: https://github.com/your-username/aligncount-demo/archive/v{{ version }}.tar.gz
+          sed -i "s|^  url: .*|  url: https://github.com/${OWNER}/aligncount-demo/archive/v${{ steps.vars.outputs.VERSION }}.tar.gz|" meta.yaml
+          
+          # Update the homepage URL to use the real owner
+          #    (line indented two spaces under about:)
+          sed -i "s|^  home: .*|  home: https://github.com/${OWNER}/aligncount-demo|" meta.yaml
 
       # 5) Build the conda package
       - name: Build conda package
