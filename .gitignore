@@ -1,0 +1,129 @@
+# ------------------------
+# Mac OS
+# ------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear on external disks
+.Spotlight-V100
+.Trashes
+
+# ------------------------
+# Build directories
+# ------------------------
+# CMake build output
+/build/
+/_build/
+/_build_*/
+/CMakeFiles/
+/CMakeCache.txt
+/*.cmake.user
+/*.cmake.user.*
+/Makefile
+/compile_commands.json
+
+# Scikit-build temporary directories
+/_skbuild/
+/wheelhouse/
+
+/dist/
+/*.egg-info/
+/.build/
+
+# CLion specific
+cmake-build-debug/
+CMakeSettings.json
+.idea/                                   # if using CLion’s shared project files
+
+# ------------------------
+# Python virtual environments
+# ------------------------
+# Common names for virtual environments
+/venv/
+/env/
+/.env/
+/.venv/
+/test_env/
+/__venv__/
+/pip-wheel-metadata/
+/*.egg
+*.egg-info/
+/*.egg/
+
+/python_env/
+/python-cache/
+/__pycache__/
+/*.py[cod]
+*$py.class
+
+# pip cache
+pip-log.txt
+
+# pytest cache
+/.pytest_cache/
+/.vscode/pytest
+
+# coverage output
+htmlcov/
+/.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# mypy
+.mypy_cache/
+.dmypy.json
+
+# pytype
+.pytype/
+
+# ------------------------
+# PyCharm
+# ------------------------
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# ------------------------
+# CLion
+# ------------------------
+# (Already covered by .idea and cmake-build-debug)
+
+# ------------------------
+# Logs and databases
+# ------------------------
+*.log
+*.sqlite3
+*.db
+
+# ------------------------
+# Docker
+# ------------------------
+/docker-compose.override.yml
+Dockerfile.*
+
+# ------------------------
+# Conda build output
+# ------------------------
+/conda-recipe/build_artifacts/
+/conda-bld/
+/pkgs/
+
+# ------------------------
+# Others
+# ------------------------
+*.swp
+*~
+._*
+*.tmp
