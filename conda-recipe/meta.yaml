@@ -6,7 +6,7 @@ package:
   version: {{ version }}
 
 source:
-  url: https://github.com/your-username/aligncount-demo/archive/v{{ version }}.tar.gz
+  url: <PLACEHOLDER>
   sha256: <PLACEHOLDER>
 
 build:
@@ -35,6 +35,6 @@ build:
     python -m pip install . --no-deps --ignore-installed -vv
 
 about:
-  home: https://github.com/your-username/aligncount-demo
+  home: <PLACEHOLDER>
   license: MIT
   summary: "C++ linecount + Python wrapper"

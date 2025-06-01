@@ -41,8 +41,9 @@ jobs:
         run: |
           cd conda-recipe
           
-          # Get OWNER (the part before the slash in GITHUB_REPOSITORY)
+          # Extract OWNER and REPO from GITHUB_REPOSITORY (format: owner/repo)
           OWNER=${GITHUB_REPOSITORY%%/*}
+          REPO=${GITHUB_REPOSITORY##*/}
         
           # Replace the Jinja “{% set version = "..." %}” line:
           sed -i "s|^{% set version = \".*\" %}|{% set version = \"${{ steps.vars.outputs.VERSION }}\" %}|" meta.yaml
@@ -50,14 +51,15 @@ jobs:
           # Replace the “  sha256: ...” line (two‐space indentation under source:)
           sed -i "s|^  sha256: .*|  sha256: ${{ steps.vars.outputs.SHA256 }}|" meta.yaml
           
-          # Update the source URL to use the real owner and version
+          # Update the source URL to use the real owner, repo, and version
           #    Original line looks like:
-          #      url: https://github.com/your-username/aligncount-demo/archive/v{{ version }}.tar.gz
-          sed -i "s|^  url: .*|  url: https://github.com/${OWNER}/aligncount-demo/archive/v${{ steps.vars.outputs.VERSION }}.tar.gz|" meta.yaml
+          #      url: <PLACEHOLDER>
+          sed -i "s|^  url: .*|  url: https://github.com/${OWNER}/${REPO}/archive/v${{ steps.vars.outputs.VERSION }}.tar.gz|" meta.yaml
           
-          # Update the homepage URL to use the real owner
-          #    (line indented two spaces under about:)
-          sed -i "s|^  home: .*|  home: https://github.com/${OWNER}/aligncount-demo|" meta.yaml
+          # Update the homepage URL to use the real owner and repo
+          #    Original line looks like:
+          #      home: <PLACEHOLDER>
+          sed -i "s|^  home: .*|  home: https://github.com/${OWNER}/${REPO}|" meta.yaml
 
       # 5) Build the conda package
       - name: Build conda package
