@@ -35,7 +35,7 @@ build:
     cmake --install . --prefix $PREFIX
     cd ..
     # Now that pyproject.toml exists, pip will fetch scikit-build for metadata
-    pip3 install --upgrade pip scikit-build
+    pip3 install --upgrade pip3 scikit-build
     pip3 install . --no-deps --ignore-installed -vv
 
 about:
