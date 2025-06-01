@@ -34,7 +34,6 @@ build:
     cmake --build . --parallel ${CPU_COUNT:-1}
     cmake --install . --prefix $PREFIX
     cd ..
-    # This bypasses PEP 517 and uses setuptools directly
     python setup.py install --single-version-externally-managed --record=record.txt
 
 about:
