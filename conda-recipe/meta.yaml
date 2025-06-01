@@ -15,13 +15,13 @@ build:
     build:
       - {{ compiler("cxx") }}
       - cmake
-      - python3
-      - pip3
+      - python
+      - pip
       - setuptools
       - scikit-build
     host:
-      - python3
-      - pip3
+      - python
+      - pip
       - setuptools
       - scikit-build
     run:
@@ -34,7 +34,7 @@ build:
     cmake --build . --parallel ${CPU_COUNT:-1}
     cmake --install . --prefix $PREFIX
     cd ..
-    pip3 install . --no-deps --ignore-installed -vv
+    pip install . -vv
 
 about:
   home: <PLACEHOLDER>
