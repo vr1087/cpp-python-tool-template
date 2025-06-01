@@ -1,0 +1,40 @@
+{% set name = "aligncount-demo" %}
+{% set version = "0.1.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/your-username/aligncount-demo/archive/v{{ version }}.tar.gz
+  sha256: <PLACEHOLDER>
+
+build:
+  number: 0
+  requirements:
+    build:
+      - {{ compiler("cxx") }}
+      - cmake
+      - python
+      - pip
+      - scikit-build
+      - setuptools
+    host:
+      - python
+      - pip
+    run:
+      - python
+
+  script: |
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX
+    cmake --build . --parallel ${CPU_COUNT:-1}
+    cmake --install . --prefix $PREFIX
+    cd ..
+    python -m pip install . --no-deps --ignore-installed -vv
+
+about:
+  home: https://github.com/your-username/aligncount-demo
+  license: MIT
+  summary: "C++ linecount + Python wrapper"
