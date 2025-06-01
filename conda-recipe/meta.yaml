@@ -32,7 +32,7 @@ build:
     cmake --build . --parallel ${CPU_COUNT:-1}
     cmake --install . --prefix $PREFIX
     cd ..
-    python -m pip install . --no-deps --ignore-installed -vv
+    python -m pip install . --no-deps --ignore-installed --no-build-isolation -vv
 
 about:
   home: <PLACEHOLDER>
