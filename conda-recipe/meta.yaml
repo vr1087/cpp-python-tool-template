@@ -17,11 +17,11 @@ build:
       - cmake
       - python
       - pip
-      - scikit-build
       - setuptools
     host:
       - python
       - pip
+      - scikit-build
     run:
       - python
 
