@@ -34,7 +34,8 @@ build:
     cmake --build . --parallel ${CPU_COUNT:-1}
     cmake --install . --prefix $PREFIX
     cd ..
-    python setup.py install --single-version-externally-managed --record=record.txt
+    # Now that pyproject.toml exists, pip will fetch scikit-build for metadata
+    python -m pip install . --no-deps --ignore-installed -vv
 
 about:
   home: <PLACEHOLDER>
