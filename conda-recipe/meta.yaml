@@ -10,23 +10,7 @@ source:
   sha256: <PLACEHOLDER>
 
 build:
-  number: 0
-  requirements:
-    build:
-      - {{ compiler("cxx") }}
-      - cmake
-      - python
-      - pip
-      - setuptools
-      - scikit-build
-    host:
-      - python
-      - pip
-      - setuptools
-      - scikit-build
-    run:
-      - python
-
+  skip: true  # [not win]
   script: |
     mkdir build
     cd build
@@ -34,7 +18,21 @@ build:
     cmake --build . --parallel ${CPU_COUNT:-1}
     cmake --install . --prefix $PREFIX
     cd ..
-    pip install . -vv
+    {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler("cxx") }}
+    - cmake
+    - python >=3.10
+    - pip
+    - setuptools
+    - scikit-build
+  host:
+    - python >=3.10
+  run:
+    - python >=3.10
 
 about:
   home: <PLACEHOLDER>

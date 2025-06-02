@@ -35,33 +35,41 @@ jobs:
           curl -L $TAR_URL -o release.tar.gz
           SHA256=$(sha256sum release.tar.gz | cut -d' ' -f1)
           echo "SHA256=$SHA256" >> $GITHUB_OUTPUT
+          # Extract OWNER and REPO from GITHUB_REPOSITORY (format: owner/repo)
+          REPO_OWNER=${GITHUB_REPOSITORY%%/*}
+          echo "REPO_OWNER=$REPO_OWNER" >> $GITHUB_OUTPUT
+          REPO_NAME=${GITHUB_REPOSITORY##*/}
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
+          REPO_HOME="https://github.com/${GITHUB_REPOSITORY}"
+          echo "REPO_HOME=$REPO_HOME" >> $GITHUB_OUTPUT
+          echo "$GITHUB_OUTPUT"
 
       # 4) Update meta.yaml with the correct version and sha256
       - name: Patch conda-recipe/meta.yaml
         run: |
           cd conda-recipe
           
-          # Extract OWNER and REPO from GITHUB_REPOSITORY (format: owner/repo)
-          OWNER=${GITHUB_REPOSITORY%%/*}
-          REPO=${GITHUB_REPOSITORY##*/}
-        
+          # Replace the Jinja “{% set name = "..." %}” line:
+          sed -i "s|^{% set name = \".*\" %}|{% set name = \"${{ steps.vars.outputs.REPO_NAME }}\" %}|" meta.yaml
+          
           # Replace the Jinja “{% set version = "..." %}” line:
           sed -i "s|^{% set version = \".*\" %}|{% set version = \"${{ steps.vars.outputs.VERSION }}\" %}|" meta.yaml
-
-          # Replace the “  sha256: ...” line (two‐space indentation under source:)
-          sed -i "s|^  sha256: .*|  sha256: ${{ steps.vars.outputs.SHA256 }}|" meta.yaml
           
           # Update the source URL to use the real owner, repo, and version
           #    Original line looks like:
           #      url: <PLACEHOLDER>
-          sed -i "s|^  url: .*|  url: https://github.com/${OWNER}/${REPO}/archive/v${{ steps.vars.outputs.VERSION }}.tar.gz|" meta.yaml
+          sed -i "s|^  url: .*|  url: ${{ steps.vars.outputs.TAR_URL }}|" meta.yaml
+          
+          # Replace the “  sha256: ...” line (two‐space indentation under source:)
+          #    Original line looks like:
+          #      sha256: <PLACEHOLDER>
+          sed -i "s|^  sha256: .*|  sha256: ${{ steps.vars.outputs.SHA256 }}|" meta.yaml
           
           # Update the homepage URL to use the real owner and repo
           #    Original line looks like:
           #      home: <PLACEHOLDER>
-          sed -i "s|^  home: .*|  home: https://github.com/${OWNER}/${REPO}|" meta.yaml
+          sed -i "s|^  home: .*|  home: ${{ steps.vars.outputs.REPO_HOME }}|" meta.yaml
           
-          # check meta.yaml contents
           cat meta.yaml
 
       # 5) Build the conda package
