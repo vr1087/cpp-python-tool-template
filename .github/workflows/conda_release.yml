@@ -8,8 +8,19 @@ on:
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
 
     steps:
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniconda-version: "latest"
+          channels: bioconda, conda-forge, defaults
+          use-only-tar-bz2: true  # IMPORTANT: This needs to be set for caching to work properly!
+          auto-update-conda: true
+          auto-activate-base: true
+
       # 1) Check out the current repo (so we can access conda-recipe/)
       - name: Check out repository
         uses: actions/checkout@v3
@@ -18,14 +29,8 @@ jobs:
 
       # 2) Install Miniconda and conda-build/anaconda-client
       - name: create environment with conda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          channels: conda-forge,defaults
-          auto-activate-base: false
-          auto-update-conda: true
-          activate-environment: build-env
-          environment-file: conda-recipe/build-env.yaml
-
+        run: |
+            conda install -y conda-build anaconda-client
       # 3) Determine VERSION (strip the leading “v”) and compute SHA256
       - name: Set version and SHA256
         id: vars
@@ -79,7 +84,6 @@ jobs:
       - name: Build conda package
         run: |
           cd conda-recipe
-          conda activate build-env
           conda-build . --output-folder ../conda-build-artifacts
 
       # 6) Upload the built package to Anaconda.org
