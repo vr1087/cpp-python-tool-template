@@ -79,6 +79,7 @@ jobs:
       - name: Build conda package
         run: |
           cd conda-recipe
+          conda activate build-env
           conda-build . --output-folder ../conda-build-artifacts
 
       # 6) Upload the built package to Anaconda.org
