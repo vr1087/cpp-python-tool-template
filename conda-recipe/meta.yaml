@@ -31,8 +31,10 @@ requirements:
     - scikit-build
   host:
     - python >=3.10
+    - scikit-build
   run:
     - python >=3.10
+    - scikit-build
 
 about:
   home: <PLACEHOLDER>

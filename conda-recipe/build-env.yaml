@@ -1,0 +1,9 @@
+name: build-env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - scikit-build
+  - conda-build
+  - anaconda-client
