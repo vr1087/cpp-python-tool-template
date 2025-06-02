@@ -15,8 +15,9 @@ jobs:
     steps:
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          miniconda-version: "latest"
-          channels: bioconda, conda-forge, defaults
+          mamba-version: "*"
+          channels: conda-forge, defaults
+          channel-priority: true
           use-only-tar-bz2: true  # IMPORTANT: This needs to be set for caching to work properly!
           auto-update-conda: true
           auto-activate-base: true
@@ -91,5 +92,5 @@ jobs:
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          PACKAGE=$(ls conda-build-artifacts/linux-64/${GITHUB_REPOSITORY##*/}-${{ steps.vars.outputs.VERSION }}-*.tar.bz2)
+          PACKAGE=$(ls conda-build-artifacts/linux-64/cpp-python-tool-template-${{ steps.vars.outputs.VERSION }}-*.tar.bz2)
           anaconda -t $ANACONDA_TOKEN upload $PACKAGE --user $ANACONDA_USER --label main --force
