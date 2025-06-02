@@ -10,7 +10,7 @@ source:
   sha256: <PLACEHOLDER>
 
 build:
-  skip: true  # [not win]
+  skip: true  # [win]
   script: |
     mkdir build
     cd build
