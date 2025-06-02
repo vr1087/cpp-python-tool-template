@@ -89,6 +89,7 @@ jobs:
       - name: Upload to Anaconda.org
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+          ANACONDA_USER: ${{ secrets.ANACONDA_USER }}
         run: |
           PACKAGE=$(ls conda-build-artifacts/linux-64/cpp-python-tool-template-${{ steps.vars.outputs.VERSION }}-*.tar.bz2)
           anaconda -t $ANACONDA_TOKEN upload $PACKAGE --user $ANACONDA_USER --label main --force
