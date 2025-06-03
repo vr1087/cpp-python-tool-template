@@ -34,6 +34,7 @@ requirements:
     - scikit-build
   host:
     - python
+    - scikit-build
   run:
     - python
 
