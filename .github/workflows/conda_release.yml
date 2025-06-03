@@ -59,11 +59,11 @@ jobs:
           # Build repo home URL
           REPO_HOME="https://github.com/${GITHUB_REPOSITORY}"
           
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "TAR_URL=$TAR_URL" >> $GITHUB_OUTPUT
           echo "SHA256=$SHA256" >> $GITHUB_OUTPUT
           echo "REPO_OWNER=$REPO_OWNER" >> $GITHUB_OUTPUT
-          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
           echo "REPO_HOME=$REPO_HOME" >> $GITHUB_OUTPUT
 
       # 4) Build the conda package for each platform
