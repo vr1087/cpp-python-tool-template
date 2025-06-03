@@ -77,9 +77,7 @@ jobs:
           PACKAGE_HOME: ${{ steps.vars.outputs.PACKAGE_HOME }}
         run: |
           cd conda-recipe
-          conda-build . \
-            --output-folder ../conda-build-artifacts \
-            --platform ${{ matrix.platform }}
+          conda-build . --output-folder ../conda-build-artifacts
 
       # 5) Upload the built artifacts to Anaconda.org
       - name: Upload to Anaconda.org
