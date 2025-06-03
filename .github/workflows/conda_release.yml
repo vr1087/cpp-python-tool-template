@@ -77,12 +77,12 @@ jobs:
       # 4) Build the conda package for each platform
       - name: Build conda package
         env:
-          PACKAGE_VERSION: ${{ steps.vars.outputs.PACKAGE_VERSION }}
-          PACKAGE_TAR_URL: ${{ steps.vars.outputs.PACKAGE_TAR_URL }}
-          PACKAGE_SHA256: ${{ steps.vars.outputs.PACKAGE_SHA256 }}
-          GITHUB_REPO_OWNER: ${{ steps.vars.outputs.GITHUB_REPO_OWNER }}
-          GITHUB_REPO_NAME: ${{ steps.vars.outputs.GITHUB_REPO_NAME }}
-          PACKAGE_HOME: ${{ steps.vars.outputs.PACKAGE_HOME }}
+          VERSION: ${{ steps.vars.outputs.VERSION }}
+          TAR_URL: ${{ steps.vars.outputs.TAR_URL }}
+          SHA256: ${{ steps.vars.outputs.SHA256 }}
+          REPO_OWNER: ${{ steps.vars.outputs.REPO_OWNER }}
+          REPO_NAME: ${{ steps.vars.outputs.REPO_NAME }}
+          REPO_HOME: ${{ steps.vars.outputs.REPO_HOME }}
         run: |
           cd conda-recipe
           conda-build . --output-folder ../conda-build-artifacts
