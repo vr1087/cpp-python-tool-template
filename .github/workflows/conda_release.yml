@@ -9,10 +9,16 @@ jobs:
   build-and-upload:
     strategy:
       matrix:
-        platform: [ linux-64, linux-aarch64, osx-64, osx-arm64 ]
-    runs-on: ${{ (matrix.platform == 'osx-64' || matrix.platform == 'osx-arm64')
-                   && 'macos-latest'
-                   || 'ubuntu-latest' }}
+        platform:
+          - subdir: linux-64
+            runs: ubuntu-latest
+          - subdir: linux-aarch64
+            runs: ubuntu-24.04-arm
+          - subdir: osx-64
+            runs: macos-13
+          - subdir: osx-arm64
+            runs: macos-latest
+    runs-on: ${{ matrix.platform.runs }}
     defaults:
       run:
         shell: bash -l {0}
@@ -94,5 +100,5 @@ jobs:
           VERSION:        ${{ steps.vars.outputs.VERSION }}
           REPO_NAME:      ${{ steps.vars.outputs.REPO_NAME }}
         run: |
-          PKG=$(ls conda-build-artifacts/${{ matrix.platform }}/${{ env.REPO_NAME }}-${{ env.VERSION }}-*.tar.bz2)
+          PKG=$(ls conda-build-artifacts/${{ matrix.platform.subdir }}/${{ env.REPO_NAME }}-${{ env.VERSION }}-*.tar.bz2)
           anaconda -t $ANACONDA_TOKEN upload "$PKG" --user $ANACONDA_USER --label main --force
