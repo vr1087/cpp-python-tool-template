@@ -7,89 +7,87 @@ on:
 
 jobs:
   build-and-upload:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ linux-64, linux-aarch64, osx-64, osx-arm64 ]
+    runs-on: ${{ (matrix.platform == 'osx-64' || matrix.platform == 'osx-arm64')
+                   && 'macos-latest'
+                   || 'ubuntu-latest' }}
     defaults:
       run:
         shell: bash -l {0}
 
     steps:
-      - uses: conda-incubator/setup-miniconda@v3
-        with:
-          channels: conda-forge, defaults
-          use-only-tar-bz2: true  # IMPORTANT: This needs to be set for caching to work properly!
-          auto-update-conda: true
-          auto-activate-base: true
-
       # 1) Check out the current repo (so we can access conda-recipe/)
       - name: Check out repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      # 2) Install Miniconda and conda-build/anaconda-client
+      # 2) Install Miniconda & configure channels
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          channels: conda-forge, defaults
+          use-only-tar-bz2: true
+          auto-update-conda: true
+          auto-activate-base: true
+
+      # 2) Install conda-build and anaconda-client
       - name: create environment with conda
         run: |
             conda install -y conda-build anaconda-client
-      # 3) Determine VERSION (strip the leading “v”) and compute SHA256
+
+      # 3) Compute VERSION, TAR_URL, SHA256, and REPO info
       - name: Set version and SHA256
         id: vars
         run: |
+          # Strip leading "v" from tag name (e.g. "v0.3.0" -> "0.3.0")
           VERSION=${GITHUB_REF_NAME#v}
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          # Download tarball for this tag and compute checksum
+          
+          # Build the GitHub tarball URL
           TAR_URL="https://github.com/${GITHUB_REPOSITORY}/archive/refs/tags/v${VERSION}.tar.gz"
-          echo "TAR_URL=$TAR_URL" >> $GITHUB_OUTPUT
+          
+          # Download tarball and compute SHA256 checksum
           curl -L $TAR_URL -o release.tar.gz
           SHA256=$(sha256sum release.tar.gz | cut -d' ' -f1)
-          echo "SHA256=$SHA256" >> $GITHUB_OUTPUT
+          
           # Extract OWNER and REPO from GITHUB_REPOSITORY (format: owner/repo)
           REPO_OWNER=${GITHUB_REPOSITORY%%/*}
-          echo "REPO_OWNER=$REPO_OWNER" >> $GITHUB_OUTPUT
           REPO_NAME=${GITHUB_REPOSITORY##*/}
-          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
+          
+          # Build repo home URL
           REPO_HOME="https://github.com/${GITHUB_REPOSITORY}"
+          
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "TAR_URL=$TAR_URL" >> $GITHUB_OUTPUT
+          echo "SHA256=$SHA256" >> $GITHUB_OUTPUT
+          echo "REPO_OWNER=$REPO_OWNER" >> $GITHUB_OUTPUT
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
           echo "REPO_HOME=$REPO_HOME" >> $GITHUB_OUTPUT
-          echo "$GITHUB_OUTPUT"
 
-      # 4) Update meta.yaml with the correct version and sha256
-      - name: Patch conda-recipe/meta.yaml
-        run: |
-          cd conda-recipe
-          
-          # Replace the Jinja “{% set name = "..." %}” line:
-          sed -i "s|^{% set name = \".*\" %}|{% set name = \"${{ steps.vars.outputs.REPO_NAME }}\" %}|" meta.yaml
-          
-          # Replace the Jinja “{% set version = "..." %}” line:
-          sed -i "s|^{% set version = \".*\" %}|{% set version = \"${{ steps.vars.outputs.VERSION }}\" %}|" meta.yaml
-          
-          # Update the source URL to use the real owner, repo, and version
-          #    Original line looks like:
-          #      url: <PLACEHOLDER>
-          sed -i "s|^  url: .*|  url: ${{ steps.vars.outputs.TAR_URL }}|" meta.yaml
-          
-          # Replace the “  sha256: ...” line (two‐space indentation under source:)
-          #    Original line looks like:
-          #      sha256: <PLACEHOLDER>
-          sed -i "s|^  sha256: .*|  sha256: ${{ steps.vars.outputs.SHA256 }}|" meta.yaml
-          
-          # Update the homepage URL to use the real owner and repo
-          #    Original line looks like:
-          #      home: <PLACEHOLDER>
-          sed -i "s|^  home: .*|  home: ${{ steps.vars.outputs.REPO_HOME }}|" meta.yaml
-          
-          cat meta.yaml
-
-      # 5) Build the conda package
+      # 4) Build the conda package for each platform
       - name: Build conda package
+        env:
+          PACKAGE_VERSION: ${{ steps.vars.outputs.PACKAGE_VERSION }}
+          PACKAGE_TAR_URL: ${{ steps.vars.outputs.PACKAGE_TAR_URL }}
+          PACKAGE_SHA256: ${{ steps.vars.outputs.PACKAGE_SHA256 }}
+          GITHUB_REPO_OWNER: ${{ steps.vars.outputs.GITHUB_REPO_OWNER }}
+          GITHUB_REPO_NAME: ${{ steps.vars.outputs.GITHUB_REPO_NAME }}
+          PACKAGE_HOME: ${{ steps.vars.outputs.PACKAGE_HOME }}
         run: |
           cd conda-recipe
-          conda-build . --output-folder ../conda-build-artifacts
+          conda-build . \
+            --output-folder ../conda-build-artifacts \
+            --platform ${{ matrix.platform }}
 
-      # 6) Upload the built package to Anaconda.org
+      # 5) Upload the built artifacts to Anaconda.org
       - name: Upload to Anaconda.org
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
-          ANACONDA_USER: ${{ secrets.ANACONDA_USER }}
+          ANACONDA_USER:  ${{ secrets.ANACONDA_USER }}
+          VERSION:        ${{ steps.vars.outputs.VERSION }}
+          REPO_NAME:      ${{ steps.vars.outputs.REPO_NAME }}
         run: |
-          PACKAGE=$(ls conda-build-artifacts/linux-64/cpp-python-tool-template-${{ steps.vars.outputs.VERSION }}-*.tar.bz2)
-          anaconda -t $ANACONDA_TOKEN upload $PACKAGE --user $ANACONDA_USER --label main --force
+          PKG=$(ls conda-build-artifacts/${{ matrix.platform }}/${{ env.REPO_NAME }}-${{ env.VERSION }}-*.tar.bz2)
+          anaconda -t $ANACONDA_TOKEN upload "$PKG" --user $ANACONDA_USER --label main --force

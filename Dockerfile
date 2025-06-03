@@ -39,11 +39,10 @@ RUN pip3 wheel . -w /wheelhouse
 # ----------------------------------------------------------------------------
 FROM ubuntu:22.04
 
-# 1) Install only runtime dependencies: Python 3 and samtools (if your wrapper needs it)
+# 1) Install only runtime dependencies: Python 3
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
-    samtools \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

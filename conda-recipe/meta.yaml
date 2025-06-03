@@ -1,13 +1,16 @@
-{% set name = "aligncount-demo" %}
-{% set version = "0.1.0" %}
+{% set REPO_NAME   = environ.get('GITHUB_REPO_NAME',   'cpp-python-tool-template') %}
+{% set VERSION     = environ.get('PACKAGE_VERSION',    '0.0.1') %}
+{% set TAR_URL     = environ.get('PACKAGE_TAR_URL',    '') %}
+{% set SHA256      = environ.get('PACKAGE_SHA256',     '') %}
+{% set REPO_HOME   = environ.get('PACKAGE_HOME',       '') %}
 
 package:
-  name: {{ name }}
-  version: {{ version }}
+  name: {{ REPO_NAME }}
+  version: {{ VERSION }}
 
 source:
-  url: <PLACEHOLDER>
-  sha256: <PLACEHOLDER>
+  url:   {{ TAR_URL }}
+  sha256: {{ SHA256 }}
 
 build:
   skip: true  # [win]
@@ -25,16 +28,16 @@ requirements:
   build:
     - {{ compiler("cxx") }}
     - cmake
-    - python >=3.10
+    - python
     - pip
     - setuptools
     - scikit-build
   host:
-    - python >=3.10
+    - python
   run:
-    - python >=3.10
+    - python
 
 about:
-  home: <PLACEHOLDER>
+  home: {{ REPO_HOME }}
   license: MIT
   summary: "C++ linecount + Python wrapper"
