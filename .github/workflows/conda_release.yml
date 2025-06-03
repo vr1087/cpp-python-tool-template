@@ -50,7 +50,15 @@ jobs:
           
           # Download tarball and compute SHA256 checksum
           curl -L $TAR_URL -o release.tar.gz
-          SHA256=$(sha256sum release.tar.gz | cut -d' ' -f1)
+          
+          if command -v sha256sum &>/dev/null; then
+            # linux
+            SHA256=$(sha256sum release.tar.gz | cut -d' ' -f1)
+          else
+            # mac
+            SHA256=$(shasum -a 256 release.tar.gz | awk '{ print $1 }')
+          fi
+          
           
           # Extract OWNER and REPO from GITHUB_REPOSITORY (format: owner/repo)
           REPO_OWNER=${GITHUB_REPOSITORY%%/*}
