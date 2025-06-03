@@ -38,6 +38,7 @@ jobs:
           use-only-tar-bz2: true
           auto-update-conda: true
           auto-activate-base: true
+          python-version: 3.13
 
       # 2) Install conda-build and anaconda-client
       - name: create environment with conda
