@@ -28,15 +28,15 @@ requirements:
   build:
     - {{ compiler("cxx") }}
     - cmake
-    - python
+    - python >=3.9,<=3.13
     - pip
     - setuptools
     - scikit-build
   host:
-    - python
+    - python >=3.9,<=3.13
     - scikit-build
   run:
-    - python
+    - python >=3.9,<=3.13
 
 about:
   home: {{ REPO_HOME }}
