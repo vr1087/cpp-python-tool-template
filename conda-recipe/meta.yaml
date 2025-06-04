@@ -37,7 +37,7 @@ outputs:
   # ---------------------------------------------------------
   # Output #1: Arch‐specific C++ executable (aligncount-cpp)
   # ---------------------------------------------------------
-  - name: {{ name }}_cpp
+  - name: aligncount_cpp
     requirements:
       host:
         - {{ compiler("cxx") }}
@@ -51,7 +51,7 @@ outputs:
   # ---------------------------------------------------------
   # Output #2: Noarch Python wrapper (aligncount_demo)
   # ---------------------------------------------------------
-  - name: {{ name }}
+  - name: aligncount
     noarch: python
 
     requirements:
@@ -65,7 +65,7 @@ outputs:
         - setuptools
       run:
         - python >=3.9,<3.14
-        - {{ pin_subpackage(name + "_cpp", exact=True) }}
+        - {{ pin_subpackage(aligncount_cpp, exact=True) }}
 
     script: |
       cd cli
