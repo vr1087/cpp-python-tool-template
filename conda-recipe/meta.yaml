@@ -65,7 +65,7 @@ outputs:
         - setuptools
       run:
         - python >=3.9,<3.14
-        - {{ pin_subpackage(aligncount_cpp, exact=True) }}
+        - {{ pin_subpackage("aligncount_cpp", exact=True) }}
 
     script: |
       cd cli
