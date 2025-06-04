@@ -1,15 +1,7 @@
 [build-system]
 requires = [
-    "setuptools>=42",
-    "scikit-build>=0.13",
-    "cmake>=3.18"
+    "setuptools>=46",
+    "scikit-build>=0.18",
+    "cmake>=3.5"
 ]
 build-backend = "setuptools.build_meta"
-
-[project]
-name = "aligncount_demo"
-version = "0.2.0"
-description = "Aligncount wrapper"
-
-[project.scripts]
-aligncount = "cli.entrypoint:main"

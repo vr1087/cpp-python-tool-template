@@ -1,12 +1,12 @@
-# setup.py  (root, uses scikit-build + metadata from setup_common.cfg)
+# cli/setup.py  (pure-Python installer, uses setuptools + metadata from setup_common.cfg)
 
 import os
 import configparser
-from skbuild import setup
+from setuptools import setup
 
-# 1) Load the shared INI file
+# 1) Load the same shared INI file from the parent directory
 cfg = configparser.ConfigParser()
-cfg.read(os.path.join(os.path.dirname(__file__), "setup.cfg"))
+cfg.read(os.path.join(os.path.dirname(__file__), "..", "setup.cfg"))
 
 # 2) Extract metadata
 metadata = cfg["metadata"]
@@ -19,12 +19,12 @@ entry_points = {
     ]
 }
 
-# 3) Call scikit-build’s setup(), passing exactly our shared metadata
+# 3) Call setuptools.setup() with that metadata
 setup(
     name=metadata["name"],
     version=metadata["version"],
     description=metadata["description"],
     python_requires=options["python_requires"],
-    packages=["cli"],       # “cli” is the only Python package at the root
+    packages=["cli"],       # finds cli/__init__.py and entrypoint.py
     entry_points=entry_points,
 )

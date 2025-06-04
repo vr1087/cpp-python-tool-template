@@ -1,8 +1,8 @@
-{% set REPO_NAME   = environ.get('REPO_NAME',  'cpp-python-tool-template') %}
-{% set VERSION     = environ.get('VERSION',    '0.2.37') %}
-{% set TAR_URL     = environ.get('TAR_URL',    'https://github.com/vr1087/cpp-python-tool-template/archive/refs/tags/v0.2.37.tar.gz') %}
-{% set SHA256      = environ.get('SHA256',     'c8bffc3e02bc465d0852fd124c354147a449b09e9847ff0ecaa747d083626f2a') %}
-{% set REPO_HOME   = environ.get('REPO_HOME',  'https://github.com/vr1087/cpp-python-tool-template') %}
+{% set REPO_NAME   = environ.get('REPO_NAME',  '') %}
+{% set VERSION     = environ.get('VERSION',    '') %}
+{% set TAR_URL     = environ.get('TAR_URL',    '') %}
+{% set SHA256      = environ.get('SHA256',     '') %}
+{% set REPO_HOME   = environ.get('REPO_HOME',  '') %}
 
 package:
   name: {{ REPO_NAME }}
@@ -22,22 +22,58 @@ build:
     cmake --build . --parallel ${CPU_COUNT:-1}
     cmake --install . --prefix $PREFIX
     cd ..
-    {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
 
 requirements:
   build:
     - {{ compiler("cxx") }}
     - cmake
-    - python
-    - pip
-    - setuptools
-    - scikit-build
   host:
-    - python
-    - scikit-build
+    # This environment only needs to run CMake and the C++ compiler
+    - {{ compiler("cxx") }}
+    - cmake
   run:
-    - python
+    # (only its C++ runtime, specified per‐output below)
+    []
+
+outputs:
+  # ---------------------------------------------------------
+  # Output #1: Arch‐specific C++ executable (aligncount-cpp)
+  # ---------------------------------------------------------
+  - name: {{ name }}_cpp
+    requirements:
+      host:
+        - {{ compiler("cxx") }}
+        - cmake
+      run:
+        - {{ cdt("libcxx") }}   # or libgcc-ng on Linux
+
+    # No separate script: top‐level build already installed
+    # the C++ binary into $PREFIX/bin/aligncount_cpp
+
+  # ---------------------------------------------------------
+  # Output #2: Noarch Python wrapper (aligncount_demo)
+  # ---------------------------------------------------------
+  - name: {{ name }}
+    noarch: python
+
+    requirements:
+      build:
+        - python >=3.9,<3.14
+        - pip
+        - setuptools
+      host:
+        - python >=3.9,<3.14
+        - pip
+        - setuptools
+      run:
+        - python >=3.9,<3.14
+        - {{ pin_subpackage(name + "_cpp", exact=True) }}
+
+    script: |
+      cd cli
+      $PYTHON -m pip install . --no-deps --ignore-installed --prefix=$PREFIX
+
 
 about:
   home: {{ REPO_HOME }}

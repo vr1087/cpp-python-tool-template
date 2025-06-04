@@ -23,16 +23,16 @@ ExternalProject_Get_Property(doctest source_dir)
 set(DOCTEST_INCLUDE_DIR ${source_dir}/doctest CACHE INTERNAL "Path to include folder for doctest")
 
 # --- Application executable ---
-add_executable(linecount src/main.cpp)
-install(TARGETS linecount RUNTIME DESTINATION bin)
+add_executable(aligncount_cpp src/main.cpp)
+install(TARGETS aligncount_cpp RUNTIME DESTINATION bin)
 
 # --- Test executable ---
 # Make test executable
-add_executable(test_linecount tests/cpp/test_main.cpp)
-target_include_directories(test_linecount PUBLIC ${DOCTEST_INCLUDE_DIR})
+add_executable(test_aligncount_cpp tests/cpp/test_main.cpp)
+target_include_directories(test_aligncount_cpp PUBLIC ${DOCTEST_INCLUDE_DIR})
 
-# Make test_linecount wait until doctest has finished downloading
-add_dependencies(test_linecount doctest)
+# Make test_aligncount_cpp wait until doctest has finished downloading
+add_dependencies(test_aligncount_cpp doctest)
 
 enable_testing()
-add_test(NAME linecount_test COMMAND test_linecount)
+add_test(NAME aligncount_cpp_test COMMAND test_aligncount_cpp)

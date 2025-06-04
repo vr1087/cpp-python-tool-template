@@ -10,8 +10,8 @@ TEST_CASE("Count dummy SAM records") {
     f << "read2" << std::endl;
     f.close();
 
-    // run the linecount executable
-    int rc = std::system("./linecount test.sam > out.txt");
+    // run the aligncount_cpp executable
+    int rc = std::system("./aligncount_cpp test.sam > out.txt");
     CHECK(rc == 0);
 
     std::ifstream in("out.txt");

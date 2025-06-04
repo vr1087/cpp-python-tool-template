@@ -65,7 +65,7 @@ RUN pip3 install pytest
 RUN pytest -q /app/tests/python/test_cli.py
 
 # 4) Verify the binaries are on PATH (just a check; you can remove)
-RUN which linecount && which aligncount
+RUN which aligncount_cpp && which aligncount
 
 # Final entrypoint: run the Python wrapper by default
 ENTRYPOINT ["aligncount"]
