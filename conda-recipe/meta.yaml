@@ -32,9 +32,6 @@ requirements:
     # This environment only needs to run CMake and the C++ compiler
     - {{ compiler("cxx") }}
     - cmake
-  run:
-    # (only its C++ runtime, specified per‐output below)
-    []
 
 outputs:
   # ---------------------------------------------------------
@@ -58,10 +55,6 @@ outputs:
     noarch: python
 
     requirements:
-      build:
-        - python >=3.9,<3.14
-        - pip
-        - setuptools
       host:
         - python >=3.9,<3.14
         - pip
