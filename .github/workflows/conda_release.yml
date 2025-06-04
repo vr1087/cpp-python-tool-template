@@ -100,5 +100,7 @@ jobs:
           VERSION:        ${{ steps.vars.outputs.VERSION }}
           REPO_NAME:      ${{ steps.vars.outputs.REPO_NAME }}
         run: |
+          PKG=$(ls conda-build-artifacts/${{ matrix.platform.subdir }}/${{ env.REPO_NAME }}_cpp-${{ env.VERSION }}-*.tar.bz2)
+          anaconda -t $ANACONDA_TOKEN upload "$PKG" --user $ANACONDA_USER --label main --force
           PKG=$(ls conda-build-artifacts/${{ matrix.platform.subdir }}/${{ env.REPO_NAME }}-${{ env.VERSION }}-*.tar.bz2)
           anaconda -t $ANACONDA_TOKEN upload "$PKG" --user $ANACONDA_USER --label main --force
