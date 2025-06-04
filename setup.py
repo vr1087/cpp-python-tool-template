@@ -25,6 +25,6 @@ setup(
     version=metadata["version"],
     description=metadata["description"],
     python_requires=options["python_requires"],
-    packages=["cli"],       # “cli” is the only Python package at the root
+    packages=["cli"],
     entry_points=entry_points,
 )

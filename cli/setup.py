@@ -11,13 +11,6 @@ cfg.read(os.path.join(os.path.dirname(__file__), "..", "setup.cfg"))
 # 2) Extract metadata
 metadata = cfg["metadata"]
 options = cfg["options"]
-entry_points = {
-    "console_scripts": [
-        line.strip()
-        for line in cfg["options.entry_points"]["console_scripts"].splitlines()
-        if line.strip()
-    ]
-}
 
 # 3) Call setuptools.setup() with that metadata
 setup(
@@ -25,6 +18,5 @@ setup(
     version=metadata["version"],
     description=metadata["description"],
     python_requires=options["python_requires"],
-    packages=["cli"],       # finds cli/__init__.py and entrypoint.py
-    entry_points=entry_points,
+    entry_points={"console_scripts":["aligncount = entrypoint:main"]},
 )
