@@ -52,7 +52,11 @@ outputs:
   # Output #2: Noarch Python wrapper (aligncount_demo)
   # ---------------------------------------------------------
   - name: aligncount
-    noarch: python
+    build:
+      noarch: python
+      script: |
+        cd cli
+        python -m pip install . --no-deps --ignore-installed --prefix=$PREFIX
 
     requirements:
       build:
@@ -66,10 +70,6 @@ outputs:
       run:
         - python >=3.9,<3.14
         - {{ pin_subpackage("aligncount_cpp", exact=True) }}
-
-    script: |
-      cd cli
-      $PYTHON -m pip install . --no-deps --ignore-installed --prefix=$PREFIX
 
 
 about:
