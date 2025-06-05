@@ -15,11 +15,21 @@ source:
 build:
   skip: true  # [win]
   detect_python: False
+  # ------------------------------------------------------------
+  # 1) Build C++ with CMake, 2) Run CTest to exercise C++ tests,
+  # 3) If CTest passes, install the binary into $PREFIX/bin
+  # ------------------------------------------------------------
   script: |
     mkdir build
     cd build
-    cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX
+    
+    # Configure & compile
+    cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_BUILD_TYPE=Release
     cmake --build . --parallel ${CPU_COUNT:-1}
+    
+    # Run C++ unit tests via CTest (fail the build if any test fails)
+    ctest --output-on-failure
+    
     cmake --install . --prefix $PREFIX
     cd ..
   number: 0
@@ -46,9 +56,6 @@ outputs:
         - libcxx   # [osx]
         - libgcc-ng  # [linux]
 
-    # No separate script: top‐level build already installed
-    # the C++ binary into $PREFIX/bin/aligncount_cpp
-
   # ---------------------------------------------------------
   # Output #2: Noarch Python wrapper (aligncount_demo)
   # ---------------------------------------------------------
@@ -72,6 +79,20 @@ outputs:
         - python >=3.9,<3.14
         - {{ pin_subpackage("aligncount_cpp", exact=False) }}
 
+    test:
+      requires:
+        - pytest
+
+      # Copy in Python test file(s) from the repo. At test time,
+      # Conda will have already installed “aligncount” (the
+      # pure-Python wrapper) into the test environment, so the
+      # test can import it.
+      source_files:
+        - ../tests/python/test_cli.py
+
+      # Invoke pytest on the copied file(s).
+      commands:
+        - pytest -q test_cli.py
 
 about:
   home: {{ REPO_HOME }}
