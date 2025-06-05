@@ -43,7 +43,8 @@ outputs:
         - {{ compiler("cxx") }}
         - cmake
       run:
-        - {{ cdt("libcxx") }}   # or libgcc-ng on Linux
+        - libcxx   # [osx]
+        - libgcc-ng  # [linux]
 
     # No separate script: top‐level build already installed
     # the C++ binary into $PREFIX/bin/aligncount_cpp
