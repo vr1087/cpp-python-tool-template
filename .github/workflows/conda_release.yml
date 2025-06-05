@@ -98,9 +98,12 @@ jobs:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
           ANACONDA_USER:  ${{ secrets.ANACONDA_USER }}
           VERSION:        ${{ steps.vars.outputs.VERSION }}
-          REPO_NAME:      ${{ steps.vars.outputs.REPO_NAME }}
         run: |
           for PKG in conda-build-artifacts/${{ matrix.platform.subdir }}/*-${{ env.VERSION }}-*.tar.bz2; do
+            echo "Uploading $PKG"
+            anaconda -t $ANACONDA_TOKEN upload "$PKG" --user $ANACONDA_USER --label main --force
+          done
+          for PKG in conda-build-artifacts/noarch/*-${{ env.VERSION }}-*.tar.bz2; do
             echo "Uploading $PKG"
             anaconda -t $ANACONDA_TOKEN upload "$PKG" --user $ANACONDA_USER --label main --force
           done
