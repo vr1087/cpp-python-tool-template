@@ -25,6 +25,6 @@ setup(
     version=metadata["version"],
     description=metadata["description"],
     python_requires=options["python_requires"],
-    packages=find_packages(where=os.path.join(os.path.dirname(__file__), "..")),
+    packages=["."],
     entry_points=entry_points,
 )

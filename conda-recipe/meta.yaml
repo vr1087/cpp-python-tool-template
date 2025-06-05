@@ -65,6 +65,7 @@ outputs:
       script: |
         cd cli
         python -m pip install . --no-deps --ignore-installed --prefix=$PREFIX
+        cd ..
 
     requirements:
       build:
@@ -88,7 +89,7 @@ outputs:
       # pure-Python wrapper) into the test environment, so the
       # test can import it.
       source_files:
-        - ../../tests/python/*.py
+        - tests/python/*.py
 
       # Invoke pytest on the copied file(s).
       commands:
