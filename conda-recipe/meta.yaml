@@ -56,6 +56,9 @@ outputs:
         - libcxx   # [osx]
         - libgcc-ng  # [linux]
 
+    files:
+      - bin/*
+
   # ---------------------------------------------------------
   # Output #2: Noarch Python wrapper (aligncount_demo)
   # ---------------------------------------------------------
@@ -72,6 +75,7 @@ outputs:
         - python >=3.9,<3.14
         - pip
         - setuptools
+        - conda-verify
       host:
         - python >=3.9,<3.14
         - pip
