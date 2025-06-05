@@ -92,7 +92,7 @@ outputs:
 
       # Invoke pytest on the copied file(s).
       commands:
-        - pytest -q test_cli.py
+        - pytest -q
 
 about:
   home: {{ REPO_HOME }}
