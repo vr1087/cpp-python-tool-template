@@ -105,6 +105,7 @@ jobs:
             for PKG_noarch in conda-build-artifacts/noarch/*-${{ env.VERSION }}-*.tar.bz2; do
               echo "Uploading noarch package: $PKG_noarch"
               anaconda -t $ANACONDA_TOKEN upload "$PKG_noarch" --user $ANACONDA_USER --label main --force
+            done
           fi
           
           # 2) Upload the arch-specific C++ package (this job’s platform)
