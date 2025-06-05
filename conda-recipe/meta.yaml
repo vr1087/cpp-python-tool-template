@@ -63,7 +63,8 @@ outputs:
     build:
       noarch: python
       script: |
-        python -m pip install "$SRC_DIR/cli" --no-deps --ignore-installed --prefix=$PREFIX
+        cd cli
+        python -m pip install . --no-deps --ignore-installed --prefix=$PREFIX
 
     requirements:
       build:
