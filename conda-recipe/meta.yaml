@@ -88,7 +88,7 @@ outputs:
       # pure-Python wrapper) into the test environment, so the
       # test can import it.
       source_files:
-        - ../tests/python/test_cli.py
+        - ../../tests/python/*.py
 
       # Invoke pytest on the copied file(s).
       commands:
