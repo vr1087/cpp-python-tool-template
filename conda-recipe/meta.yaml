@@ -63,8 +63,7 @@ outputs:
     build:
       noarch: python
       script: |
-        cd cli
-        python -m pip install . --no-deps --ignore-installed --prefix=$PREFIX
+        python -m pip install ./cli --no-deps --ignore-installed --prefix=$PREFIX
 
     requirements:
       build:
