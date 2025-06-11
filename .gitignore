@@ -123,7 +123,7 @@ Dockerfile.*
 # ------------------------
 # github workflows form remote
 # ------------------------
-cpp/.github/workflows/
+/cpp/.github/workflows/
 
 # ------------------------
 # Others
