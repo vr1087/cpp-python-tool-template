@@ -121,6 +121,11 @@ Dockerfile.*
 /pkgs/
 
 # ------------------------
+# github workflows form remote
+# ------------------------
+cpp/.github/workflows
+
+# ------------------------
 # Others
 # ------------------------
 *.swp
