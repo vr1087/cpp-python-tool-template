@@ -20,18 +20,19 @@ build:
   # 3) If CTest passes, install the binary into $PREFIX/bin
   # ------------------------------------------------------------
   script: |
-    mkdir build
-    cd build
     
     # Configure & compile
-    cmake .. -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_BUILD_TYPE=Release
-    cmake --build . --parallel ${CPU_COUNT:-1}
+    cmake -S standalone -B build/standalone -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_BUILD_TYPE=Release
+    cmake --build build/standalone --parallel ${CPU_COUNT:-1}
     
-    # Run C++ unit tests via CTest (fail the build if any test fails)
-    ctest --output-on-failure
+    # Run C++ unit tests (fail the build if any test fails)
+    cmake -S test -B build/test
+    cmake --build build/test
+    CTEST_OUTPUT_ON_FAILURE=1 cmake --build build/test --target test
     
+    # install the cpp exe
     cmake --install . --prefix $PREFIX
-    cd ..
+
   number: 0
 
 requirements:

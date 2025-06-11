@@ -27,15 +27,15 @@ jobs:
 
       - name: Configure and build C++ code
         run: |
-          mkdir -p build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release
-          cmake --build . --parallel $(nproc)
+          cd cpp
+          cmake -S standalone -B build/standalone -DCMAKE_BUILD_TYPE=Release
+          cmake --build build/standalone
 
       - name: Run C++ unit tests with CTest
         run: |
-          cd build
-          ctest --output-on-failure
+          cmake -S test -B build/test
+          cmake --build build/test
+          CTEST_OUTPUT_ON_FAILURE=1 cmake --build build/test --target test
 
       # -----------------------------
       # Part 2: Python install & tests
