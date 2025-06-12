@@ -87,6 +87,7 @@ jobs:
       - name: Install package (C++ + Python wrapper) via pip
         run: |
           source venv/bin/activate
+          cd cli
           pip install .
 
       - name: Run Python unit tests
