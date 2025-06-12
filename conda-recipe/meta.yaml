@@ -1,8 +1,8 @@
-{% set REPO_NAME   = environ.get('REPO_NAME',  '') %}
-{% set VERSION     = environ.get('VERSION',    '') %}
-{% set TAR_URL     = environ.get('TAR_URL',    '') %}
-{% set SHA256      = environ.get('SHA256',     '') %}
-{% set REPO_HOME   = environ.get('REPO_HOME',  '') %}
+{% set REPO_NAME   = environ.get('REPO_NAME',  'cpp-python-tool-template') %}
+{% set VERSION     = environ.get('VERSION',    '0.2.78') %}
+{% set TAR_URL     = environ.get('TAR_URL',    'https://github.com/vr1087/cpp-python-tool-template/archive/refs/tags/v0.2.78.tar.gz') %}
+{% set SHA256      = environ.get('SHA256',     'c6d93172e84da45fc1b0f172d56b318f17b682d80edb03d6c0d9900938dee97a') %}
+{% set REPO_HOME   = environ.get('REPO_HOME',  'https://github.com/vr1087/cpp-python-tool-template') %}
 
 package:
   name: {{ REPO_NAME }}
