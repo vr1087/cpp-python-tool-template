@@ -97,7 +97,7 @@ outputs:
         - setuptools
       run:
         - python >=3.9,<3.14
-        - {{ pin_subpackage("Aligncount", exact=False) }}
+        - {{ pin_subpackage("aligncount", exact=False) }}
 
     test:
       requires:
