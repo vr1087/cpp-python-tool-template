@@ -64,7 +64,7 @@ outputs:
   # ---------------------------------------------------------
   # Output #1: Arch‐specific C++ executable (aligncount-cpp)
   # ---------------------------------------------------------
-  - name: Aligncount
+  - name: aligncount
     requirements:
       host:
         - {{ compiler('c') }}
