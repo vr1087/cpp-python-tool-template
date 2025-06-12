@@ -21,8 +21,8 @@ COPY . .
 RUN pip3 install --upgrade pip setuptools scikit-build
 
 # 4) Manually configure, compile, and test the C++ code
-#    This builds 'linecount' and 'test_linecount', then runs CTest.
-RUN mkdir build && cd build \
+#    This builds 'Aligncount' and 'AligncountTests', then runs CTest.
+RUN cd cpp && mkdir build && cd build \
  && cmake .. -DCMAKE_BUILD_TYPE=Release \
  && cmake --build . --parallel $(nproc) \
  && ctest --output-on-failure

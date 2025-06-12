@@ -22,25 +22,41 @@ build:
   script: |
     
     # Configure & compile
-    cmake -S standalone -B build/standalone -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_BUILD_TYPE=Release
-    cmake --build build/standalone --parallel ${CPU_COUNT:-1}
+    cd cpp
+    cmake \
+      -S standalone \
+      -B build/standalone \
+      -DCMAKE_INSTALL_PREFIX=$PREFIX \
+      -DCMAKE_BUILD_TYPE=Release
+    cmake \
+      --build build/standalone \
+      --parallel ${CPU_COUNT:-1}
     
     # Run C++ unit tests (fail the build if any test fails)
-    cmake -S test -B build/test
-    cmake --build build/test
-    CTEST_OUTPUT_ON_FAILURE=1 cmake --build build/test --target test
+    cmake \
+      -S test \
+      -B build/test
+    cmake \
+      --build build/test
+    CTEST_OUTPUT_ON_FAILURE=1 cmake \
+      --build build/test \
+      --target test
     
     # install the cpp exe
-    cmake --install . --prefix $PREFIX
+    cmake \
+      --install . \
+      --prefix $PREFIX
 
   number: 0
 
 requirements:
   build:
+    - {{ compiler('c') }}
     - {{ compiler("cxx") }}
     - cmake
   host:
     # This environment only needs to run CMake and the C++ compiler
+    - {{ compiler('c') }}
     - {{ compiler("cxx") }}
     - cmake
 
@@ -48,9 +64,10 @@ outputs:
   # ---------------------------------------------------------
   # Output #1: Arch‐specific C++ executable (aligncount-cpp)
   # ---------------------------------------------------------
-  - name: aligncount_cpp
+  - name: Aligncount
     requirements:
       host:
+        - {{ compiler('c') }}
         - {{ compiler("cxx") }}
         - cmake
       run:
@@ -60,7 +77,7 @@ outputs:
   # ---------------------------------------------------------
   # Output #2: Noarch Python wrapper (aligncount_demo)
   # ---------------------------------------------------------
-  - name: aligncount
+  - name: Aligncount_wrapper
     build:
       noarch: python
       script: |
@@ -80,7 +97,7 @@ outputs:
         - setuptools
       run:
         - python >=3.9,<3.14
-        - {{ pin_subpackage("aligncount_cpp", exact=False) }}
+        - {{ pin_subpackage("Aligncount", exact=False) }}
 
     test:
       requires:
