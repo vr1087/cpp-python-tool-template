@@ -5,9 +5,11 @@ FROM ubuntu:22.04 AS builder
 
 # 1) Install build tools, CMake, Git, Python headers, and pip
 RUN apt-get update && apt-get install -y \
+    autoconf \
     build-essential \
     cmake \
     git \
+    libcurl4-openssl-dev \
     python3-dev \
     python3-pip \
  && rm -rf /var/lib/apt/lists/*
@@ -65,8 +67,8 @@ RUN pip3 install pytest
 RUN pytest -q /app/tests/python/test_cli.py
 
 # 4) Verify the binaries are on PATH (just a check; you can remove)
-RUN which aligncount_cpp && which aligncount
+RUN which Aligncount && which aligncount_wrapper
 
 # Final entrypoint: run the Python wrapper by default
-ENTRYPOINT ["aligncount"]
+ENTRYPOINT ["aligncount_wrapper"]
 CMD ["--help"]

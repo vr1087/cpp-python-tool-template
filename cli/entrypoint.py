@@ -21,24 +21,24 @@ def main():
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     c1 = sub.add_parser("count-mapped")
-    c1.add_argument("-i", "--input", required=True)
+    c1.add_argument("-a", "--alignments", required=True)
 
     c2 = sub.add_parser("count-unmapped")
-    c2.add_argument("-i", "--input", required=True)
+    c2.add_argument("-a", "--alignments", required=True)
 
     args = parser.parse_args()
-    sam_path = Path(args.input)
+    sam_path = Path(args.alignments)
     if not sam_path.exists():
-        print(f"Error: input file '{args.input}' does not exist.", file=sys.stderr)
+        print(f"Error: input file '{args.alignments}' does not exist.", file=sys.stderr)
         sys.exit(1)
 
     try:
-        raw = subprocess.check_output(["aligncount_cpp", args.input])
+        raw = subprocess.check_output(["Aligncount", "-a", args.alignments])
     except FileNotFoundError:
-        print("Error: C++ binary 'aligncount_cpp' not found in PATH.", file=sys.stderr)
+        print("Error: C++ binary 'Aligncount' not found in PATH.", file=sys.stderr)
         sys.exit(1)
     except subprocess.CalledProcessError as e:
-        print(f"Error: 'aligncount_cpp' failed (exit {e.returncode}).", file=sys.stderr)
+        print(f"Error: 'Aligncount' failed (exit {e.returncode}).", file=sys.stderr)
         sys.exit(e.returncode)
 
     # Use our new helper to produce the final string to print

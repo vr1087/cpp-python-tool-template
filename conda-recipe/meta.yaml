@@ -77,7 +77,7 @@ outputs:
   # ---------------------------------------------------------
   # Output #2: Noarch Python wrapper (aligncount_demo)
   # ---------------------------------------------------------
-  - name: Aligncount_wrapper
+  - name: aligncount_wrapper
     build:
       noarch: python
       script: |
