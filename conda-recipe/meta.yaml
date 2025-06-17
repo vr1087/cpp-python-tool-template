@@ -20,13 +20,9 @@ build:
   script: |
     export CFLAGS="-I${PREFIX}/include $CFLAGS"
     export CXXFLAGS="-I${PREFIX}/include $CXXFLAGS"
-
-    cmake -S cpp/standalone -B build/standalone \
-      -DCMAKE_INSTALL_PREFIX=$PREFIX \
-      -DCMAKE_BUILD_TYPE=Release
-    cmake --build build/standalone --parallel ${CPU_COUNT:-1}
-    cmake -S cpp/test -B build/test
-    cmake --build build/test --parallel ${CPU_COUNT:-1}
+    
+    cmake -S cpp/all -B build -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_BUILD_TYPE=Release
+    cmake --build build --parallel ${CPU_COUNT:-1}
     (cd build/test && ctest --output-on-failure)
     cmake --install build/standalone
 
