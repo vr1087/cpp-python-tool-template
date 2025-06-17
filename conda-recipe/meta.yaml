@@ -1,4 +1,4 @@
-{% set REPO_NAME   = environ.get('REPO_NAME',  'cpp-python-tool-template') %}
+{% set REPO_NAME   = environ.get('REPO_NAME',  'aligncount') %}
 {% set VERSION     = environ.get('VERSION',    '0.2.78') %}
 {% set TAR_URL     = environ.get('TAR_URL',    'https://github.com/vr1087/cpp-python-tool-template/archive/refs/tags/v0.2.78.tar.gz') %}
 {% set SHA256      = environ.get('SHA256',     'c6d93172e84da45fc1b0f172d56b318f17b682d80edb03d6c0d9900938dee97a') %}
@@ -13,69 +13,55 @@ source:
   sha256: {{ SHA256 }}
 
 build:
-  skip: true  # [win]
-  detect_python: False
-  # ------------------------------------------------------------
-  # 1) Build C++ with CMake, 2) Run CTest to exercise C++ tests,
-  # 3) If CTest passes, install the binary into $PREFIX/bin
-  # ------------------------------------------------------------
+  detect_python: false
+  script_env:
+    - CFLAGS
+    - CXXFLAGS
   script: |
-    
-    # Configure & compile
-    cd cpp
-    cmake \
-      -S standalone \
-      -B build/standalone \
+    export CFLAGS="-I${PREFIX}/include $CFLAGS"
+    export CXXFLAGS="-I${PREFIX}/include $CXXFLAGS"
+
+    cmake -S cpp/standalone -B build/standalone \
       -DCMAKE_INSTALL_PREFIX=$PREFIX \
       -DCMAKE_BUILD_TYPE=Release
-    cmake \
-      --build build/standalone \
-      --parallel ${CPU_COUNT:-1}
-    
-    # Run C++ unit tests (fail the build if any test fails)
-    cmake \
-      -S test \
-      -B build/test
-    cmake \
-      --build build/test
-    CTEST_OUTPUT_ON_FAILURE=1 cmake \
-      --build build/test \
-      --target test
-    
-    # install the cpp exe
-    cmake \
-      --install . \
-      --prefix $PREFIX
-
-  number: 0
+    cmake --build build/standalone --parallel ${CPU_COUNT:-1}
+    cmake -S cpp/test -B build/test
+    cmake --build build/test --parallel ${CPU_COUNT:-1}
+    (cd build/test && ctest --output-on-failure)
+    cmake --install build/standalone
 
 requirements:
   build:
     - {{ compiler('c') }}
-    - {{ compiler("cxx") }}
+    - {{ compiler('cxx') }}
     - cmake
+    - autoconf
+    - automake
+    - libtool
+    - m4
+    - make
   host:
-    # This environment only needs to run CMake and the C++ compiler
     - {{ compiler('c') }}
-    - {{ compiler("cxx") }}
+    - {{ compiler('cxx') }}
     - cmake
 
 outputs:
   # ---------------------------------------------------------
-  # Output #1: Arch‐specific C++ executable (aligncount-cpp)
+  # Output #1: C++ executable package (aligncount)
   # ---------------------------------------------------------
   - name: aligncount
+
     requirements:
       host:
         - {{ compiler('c') }}
         - {{ compiler("cxx") }}
         - cmake
       run:
-        - libcxx   # [osx]
-        - libgcc-ng  # [linux]
+        - libcxx      # [osx]
+        - libgcc-ng   # [linux]
 
   # ---------------------------------------------------------
-  # Output #2: Noarch Python wrapper (aligncount_demo)
+  # Output #2: Python wrapper (noarch)
   # ---------------------------------------------------------
   - name: aligncount_wrapper
     build:
@@ -102,19 +88,12 @@ outputs:
     test:
       requires:
         - pytest
-
-      # Copy in Python test file(s) from the repo. At test time,
-      # Conda will have already installed “aligncount” (the
-      # pure-Python wrapper) into the test environment, so the
-      # test can import it.
       source_files:
         - tests/python/*.py
-
-      # Invoke pytest on the copied file(s).
       commands:
         - pytest -q
 
 about:
-  home: {{ REPO_HOME }}
+  home:    {{ REPO_HOME }}
   license: MIT
   summary: "C++ linecount + Python wrapper"
