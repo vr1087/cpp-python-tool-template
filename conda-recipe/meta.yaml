@@ -50,7 +50,7 @@ outputs:
     requirements:
       host:
         - {{ compiler('c') }}
-        - {{ compiler("cxx") }}
+        - {{ compiler('cxx') }}
         - cmake
       run:
         - libcxx      # [osx]
