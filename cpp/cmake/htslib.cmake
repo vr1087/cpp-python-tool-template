@@ -61,12 +61,11 @@ else()
     URL https://github.com/samtools/htslib/releases/download/1.22/htslib-1.22.tar.bz2
     BUILD_IN_SOURCE 1
     UPDATE_COMMAND ""
+    ENVIRONMENT "CFLAGS=-D_GNU_SOURCE ${CFLAGS}" "CXXFLAGS=-D_GNU_SOURCE ${CXXFLAGS}"
     CONFIGURE_COMMAND autoreconf -i && ./configure --prefix=${htslib_PREFIX} ${disable_flags}
     BUILD_COMMAND ${MAKE_COMMAND} lib-static
     INSTALL_COMMAND ${MAKE_COMMAND} install prefix=${htslib_INSTALL}
   )
-
-  ENVIRONMENT "CFLAGS=-D_GNU_SOURCE ${CFLAGS}" "CXXFLAGS=-D_GNU_SOURCE ${CXXFLAGS}"
 
   message(STATUS "ZLIB_BUILD: ${ZLIB_BUILD}")
   if(ZLIB_BUILD)
