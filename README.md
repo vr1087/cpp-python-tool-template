@@ -13,10 +13,23 @@ Template Repo Combines:
 - GitHub Actions for CI, Docker/Conda release, styling, and documentation
 
 
-## [TODO] How to use this template
+## How to use this template
+- Use this repo [as a template](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template).
+- Replace all occurrences of "Aligncount" with the name of your project in the relevant CMakeLists.txt under `cpp/`.
+  - Capitalization matters here: `Aligncount` means the name of the project, while `aligncount` is used in file names.
+  - Remember to rename the `include/aligncount` directory to use your project's lowercase name and update all relevant `#include`s accordingly.
+  - Replace instances of ALIGNCOUNT_VERSION with `[YOUR_PROJECT_NAME]_VERSION`
+  - Set the name of the C++ executable (e.g. aligncount_cpp) to your liking in `cpp/standalone/CMakeLists.txt`
+- Replace the source files with your own
+- Set GitHub action secrets for:
+  - ANACONDA_TOKEN
+  - ANACONDA_USER
+  - DOCKERHUB_TOKEN
+  - DOCKERHUB_USERNAME
+  - CODECOV_TOKEN (if making code coverage reports for the C++ tool)
 
 ---
-## Tool Descriptions
+## Example Tool Descriptions
 ### Python Wrapper (aligncount)
 - Source: cli/entrypoint.py
 - Entry point: aligncount console script (configured in setup.py)
@@ -26,11 +39,12 @@ Template Repo Combines:
   - Calls `aligncount_cpp -a <path>` and writes to count stdout
 ### C++ Executable (aligncount_cpp)
 - Source: cpp/standalone/source/main.cpp
+- Statically links HTSlib
 - Build system: CMake (CMakeLists.txt)
 - Functionality: Counts the number of SAM records
 ---
 ## Installation
-### Build and install the Python Wrapper and the C++ tool
+### Build and install the C++ tool and the Python Wrapper
 To install in a virtualenv while at repo root:
 
     python3 -m venv venv
@@ -55,6 +69,18 @@ install the Python Wrapper by itself do (does not install aligncount_cpp):
     cd cli
     pip install .
 
+### Manually build the C++ tool aligncount_cpp
+To build manually while at repo root:
+
+    mkdir build
+    cd build
+    cmake ../cpp/standalone -DCMAKE_BUILD_TYPE=Release
+    cmake --build .
+
+Now you have aligncount_cpp available in the build folder. Run the tool to counts SAM records:
+
+    ./aligncount_cpp -a sample.sam
+
 ### Dockerfile
 A multi-stage Dockerfile builds and tests everything, then produces a minimal runtime image:
 1. Builder stage:
@@ -74,20 +100,6 @@ Build and test in one command:
 Run:
 
     docker run --rm aligncount:latest --help
-
-
-### Manually build the C++ tool aligncount_cpp
-To build manually while at repo root:
-
-    mkdir build
-    cd build
-    cmake ../cpp/standalone -DCMAKE_BUILD_TYPE=Release
-    cmake --build .
-
-Now you have aligncount_cpp available in the build folder. Run the tool to counts SAM records:
-
-    ./aligncount -a sample.sam
-
 ---
 ## Unit Tests
 
@@ -118,27 +130,8 @@ The export command is required if the wrapper is not installed.
 - `.github/workflows/cpp_install.yml` Builds, installs, and tests the C++ tool on ubuntu.
 - `.github/workflows/cpp_macos.yml` Builds and tests the C++ tool on MacOS.
 - `.github/workflows/cpp_standalone.yml` Builds the C++ tool on ubuntu.
-- `.github/workflows/cpp_ubuntu.yml` Tests the C++ tool on ubuntu.
+- `.github/workflows/cpp_ubuntu.yml` Tests and creates codecov reports for the C++ tool on ubuntu.
 - `.github/workflows/cpp_style.yml` Checks C++ and CMake source style.
----
-### .github/workflows/docker_release.yml
-
-This workflow is triggered whenever a new tag for the repo is released. It builds the docker image for linux/amd64 
-and publishes it to the docker hub registry.
-
-The workflow assumes your docker hub username and token are stored as repository secrets under `DOCKERHUB_USERNAME` 
-and `DOCKERHUB_TOKEN`.  
-
-### .github/workflows/conda_release.yml
-
-This workflow is triggered whenever a new tag for the repo is released. It uses the conda-build recipe to create and 
-publish conda packages to your personal conda channel. The workflow builds conda packages for linux and mac platforms 
-running on x86 and arm architecture. The workflow publishes the conda package under the repo name, 
-e.g. cpp-python-tool-template. 
-
-The workflow assumes your anaconda username and token are stored as repository secrets under `ANACONDA_USER` 
-and `ANACONDA_TOKEN`.
-
 ---
 ## Conda-Build Recipe
 
@@ -155,6 +148,17 @@ REPO_HOME   # URL to the repo home, e.g. https://github.com/user/foo
 ```
 ---
 ## Miscellaneous Notes
+### Template Sources
+- The development files for the C++ executable (under `cpp/`) were adapted from 
+[ModernCppStarter](https://github.com/TheLartians/ModernCppStarter) after adding HTSlib support in 
+a slim fork [htslib-cpp-starter](https://github.com/vr1087/htslib-cpp-starter). The contents of htslib-cpp-starter 
+were added to this repo under `cpp/` via `git subtree` and further adapted.
+- The implementation pattern for HTSlib support was adapted from Yang Li’s blog post: 
+[Building Cpp Development in Bioinformatics](https://yangli.hashnode.dev/building-cpp-development-in-bioinformatics) 
+### Conda Release
+The conda release workflow publishes to your personal anacanda account. The workflow uses the repository name to name 
+the conda package, which would equate to `cpp-python-tool-template` for this repo. Additionally, the workflow 
+creates a conda package for the following platforms: linux-64, linux-aarch64, osx-64, and osx-arm64.
 
 ---
 ## What’s Next

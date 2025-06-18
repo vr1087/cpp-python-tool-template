@@ -33,12 +33,12 @@ def main():
         sys.exit(1)
 
     try:
-        raw = subprocess.check_output(["aligncount", "-a", args.alignments])
+        raw = subprocess.check_output(["aligncount_cpp", "-a", args.alignments])
     except FileNotFoundError:
-        print("Error: C++ binary 'aligncount' not found in PATH.", file=sys.stderr)
+        print("Error: C++ binary 'aligncount_cpp' not found in PATH.", file=sys.stderr)
         sys.exit(1)
     except subprocess.CalledProcessError as e:
-        print(f"Error: 'aligncount' failed (exit {e.returncode}).", file=sys.stderr)
+        print(f"Error: 'aligncount_cpp' failed (exit {e.returncode}).", file=sys.stderr)
         sys.exit(e.returncode)
 
     # Use our new helper to produce the final string to print
