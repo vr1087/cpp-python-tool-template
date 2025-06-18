@@ -33,9 +33,8 @@ build:
     (cd build/test && ctest --output-on-failure)
     cmake --install build/standalone
     cd cli
-    python -m pip install . --no-deps --ignore-installed --prefix=$PREFIX
+    python -m pip install . --no-deps --ignore-installed
     cd ..
-    export PYTHONPATH="$PREFIX:$PYTHONPATH";
     pytest tests/python
 
 requirements:
