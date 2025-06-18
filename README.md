@@ -20,6 +20,8 @@ Template Repo Combines:
   - Remember to rename the `include/aligncount` directory to use your project's lowercase name and update all relevant `#include`s accordingly.
   - Replace instances of ALIGNCOUNT_VERSION with `[YOUR_PROJECT_NAME]_VERSION`
   - Set the name of the C++ executable (e.g. aligncount_cpp) to your liking in `cpp/standalone/CMakeLists.txt`
+  - Set the expected name of the C++ executable in the `cpp_standalone.yml` workflow.
+  - Set the expected name of the C++ executable and python wrapper in `DockerFile`.
 - Replace the source files with your own
 - Set GitHub action secrets for:
   - ANACONDA_TOKEN
