@@ -18,8 +18,8 @@ build:
     - CFLAGS
     - CXXFLAGS
   script: |
-    export CFLAGS="-pthread -D_GNU_SOURCE -I${PREFIX}/include $CFLAGS"
-    export CXXFLAGS="-pthread -D_GNU_SOURCE -I${PREFIX}/include $CXXFLAGS"
+    export CFLAGS="-pthread -I${PREFIX}/include $CFLAGS"
+    export CXXFLAGS="-pthread -I${PREFIX}/include $CXXFLAGS"
     export LDFLAGS="-pthread ${LDFLAGS}"
     
     cmake -S cpp/all -B build -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXE_LINKER_FLAGS="$LDFLAGS"

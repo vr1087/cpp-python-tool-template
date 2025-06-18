@@ -104,16 +104,6 @@ jobs:
           ANACONDA_USER:  ${{ secrets.ANACONDA_USER }}
           VERSION:        ${{ steps.vars.outputs.VERSION }}
         run: |
-          # 1) Upload any noarch packages (only once, from any job instance)
-          if [ "${{ matrix.platform.subdir }}" = "linux-64" ]; then
-            # The noarch files live under "noarch/"
-            for PKG_noarch in conda-build-artifacts/noarch/*-${{ env.VERSION }}-*.tar.bz2; do
-              echo "Uploading noarch package: $PKG_noarch"
-              anaconda -t $ANACONDA_TOKEN upload "$PKG_noarch" --user $ANACONDA_USER --label main --force
-            done
-          fi
-          
-          # 2) Upload the arch-specific C++ package (this job’s platform)
           for PKG in conda-build-artifacts/${{ matrix.platform.subdir }}/*-${{ env.VERSION }}-*.tar.bz2; do
             echo "Uploading $PKG"
             anaconda -t $ANACONDA_TOKEN upload "$PKG" --user $ANACONDA_USER --label main --force
