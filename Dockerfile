@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------
 FROM ubuntu:22.04 AS builder
 
-# 1) Install build tools, CMake, Git, Python headers, and pip
+# Install build tools, CMake, Git, Python headers, and pip
 RUN apt-get update && apt-get install -y \
     autoconf \
     build-essential \
@@ -16,20 +16,19 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# 2) Copy entire repo into /app
+# Copy entire repo into /app
 COPY . .
 
-# 3) Upgrade pip and install scikit-build so that "pip wheel ." will run CMake
+# Upgrade pip and install scikit-build so that "pip wheel ." will run CMake
 RUN pip3 install --upgrade pip setuptools scikit-build
 
-# 4) Manually configure, compile, and test the C++ code
-#    This builds 'Aligncount' and 'AligncountTests', then runs CTest.
+# Manually configure, compile, and test the C++ code
 RUN cd cpp && mkdir build && cd build \
- && cmake .. -DCMAKE_BUILD_TYPE=Release \
+ && cmake ../all -DCMAKE_BUILD_TYPE=Release \
  && cmake --build . --parallel $(nproc) \
- && ctest --output-on-failure
+ && CTEST_OUTPUT_ON_FAILURE=1 cmake --build test --target test
 
-# 4) Build a wheel into /wheelhouse
+# Build a wheel into /wheelhouse
 RUN pip3 wheel . -w /wheelhouse
 
 # ----------------------------------------------------------------------------
@@ -37,7 +36,7 @@ RUN pip3 wheel . -w /wheelhouse
 # ----------------------------------------------------------------------------
 FROM ubuntu:22.04
 
-# 1) Install only runtime dependencies: Python 3
+# Install only runtime dependencies
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
@@ -49,10 +48,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# 2) Copy the wheel (using wildcard) from the builder stage
+# Copy the wheel (using wildcard) from the builder stage
 COPY --from=builder /wheelhouse/*.whl /tmp/
 
-# 3) Upgrade pip, then install whichever .whl we copied
+# Upgrade pip, then install whichever .whl we copied
 RUN pip3 install --upgrade pip \
  && pip3 install /tmp/*.whl \
  && rm /tmp/*.whl
@@ -66,7 +65,7 @@ RUN pip3 install pytest
 # Run only the format_output() unit test
 RUN pytest -q /app/tests/python/test_cli.py
 
-# 4) Verify the binaries are on PATH (just a check; you can remove)
+# Verify the binaries are on PATH (just a check; you can remove)
 RUN which aligncount_cpp && which aligncount
 
 # Final entrypoint: run the Python wrapper by default
