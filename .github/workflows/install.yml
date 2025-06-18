@@ -1,0 +1,53 @@
+name: Install
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+
+env:
+  CTEST_OUTPUT_ON_FAILURE: 1
+  CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: "**/cpm_modules"
+          key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+
+      - name: Install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev
+
+      - name: build and install library
+        run: |
+          cmake -S cpp -Bbuild -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$PWD/local"
+          sudo cmake --build build --target install          
+
+      - name: configure (tests)
+        run: cmake -S cpp/test -Bbuild-test -DTEST_INSTALLED_VERSION=1 -DCMAKE_PREFIX_PATH="$PWD/local"
+
+      - name: build (tests)
+        run: cmake --build build-test --config Debug -j4
+
+      - name: test
+        run: |
+          cd build-test
+          ctest --build-config Debug
+
+      - name: cleanup
+        run: |
+          sudo rm -rf build build-test
+          
