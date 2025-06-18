@@ -28,6 +28,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20 OUTPUT_NAME "Al
 
 target_link_libraries(${PROJECT_NAME} Aligncount::Aligncount cxxopts)
 
-install(TARGETS AligncountStandalone
-        RUNTIME DESTINATION bin
-        COMPONENT Runtime)
+install(TARGETS AligncountStandalone RUNTIME DESTINATION bin COMPONENT Runtime)
