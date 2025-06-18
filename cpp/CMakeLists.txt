@@ -58,6 +58,8 @@ include(htslib)
 # if htslib is not in your environment, then build htslib from source
 if(NOT HTSlib_FOUND)
   add_dependencies(${PROJECT_NAME} htslib)
+  # also ensure the htslib target itself sees _GNU_SOURCE
+  target_compile_definitions(htslib PRIVATE _GNU_SOURCE)
 endif()
 
 # Link dependencies
