@@ -66,6 +66,8 @@ else()
     INSTALL_COMMAND ${MAKE_COMMAND} install prefix=${htslib_INSTALL}
   )
 
+  ENVIRONMENT "CFLAGS=-D_GNU_SOURCE ${CFLAGS}" "CXXFLAGS=-D_GNU_SOURCE ${CXXFLAGS}"
+
   message(STATUS "ZLIB_BUILD: ${ZLIB_BUILD}")
   if(ZLIB_BUILD)
     include(../cmake/zlib.cmake)
