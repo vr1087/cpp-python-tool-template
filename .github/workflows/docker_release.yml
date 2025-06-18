@@ -33,6 +33,6 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/aligncount-demo:latest
-            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/aligncount-demo:${{ github.ref_name }}
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/aligncount:latest
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/aligncount:${{ github.ref_name }}
           platforms: linux/amd64,linux/arm64
