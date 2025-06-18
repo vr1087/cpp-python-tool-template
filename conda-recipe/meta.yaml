@@ -18,8 +18,8 @@ build:
     - CFLAGS
     - CXXFLAGS
   script: |
-    export CFLAGS="-I${PREFIX}/include $CFLAGS"
-    export CXXFLAGS="-I${PREFIX}/include $CXXFLAGS"
+    export CFLAGS="-D_GNU_SOURCE -I${PREFIX}/include $CFLAGS"
+    export CXXFLAGS="-D_GNU_SOURCE -I${PREFIX}/include $CXXFLAGS"
     
     cmake -S cpp/all -B build -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_BUILD_TYPE=Release
     cmake --build build --parallel ${CPU_COUNT:-1}
