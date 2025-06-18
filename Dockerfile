@@ -32,10 +32,6 @@ RUN cd cpp && mkdir build && cd build \
 # 4) Build a wheel into /wheelhouse
 RUN pip3 wheel . -w /wheelhouse
 
-# (At this point, /wheelhouse/ contains something like:
-#  aligncount_demo-0.1.0-py3-none-any.whl )
-
-
 # ----------------------------------------------------------------------------
 # Stage 2: Final runtime image
 # ----------------------------------------------------------------------------
@@ -45,6 +41,10 @@ FROM ubuntu:22.04
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
+    libcurl4 \
+    liblzma5 \
+    libbz2-1.0 \
+    zlib1g \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

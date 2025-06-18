@@ -21,8 +21,8 @@ Template Repo Combines:
   - Replace instances of ALIGNCOUNT_VERSION with `[YOUR_PROJECT_NAME]_VERSION`
   - Set the name of the C++ executable (e.g. aligncount_cpp) to your liking in `cpp/standalone/CMakeLists.txt`
 - Set the expected name of the C++ executable in the `cpp_standalone.yml` workflow.
-- Set the expected name of the C++ executable and python wrapper in `DockerFile`.
 - Set the name for your published docker image in `docker_release.yml`
+- Set the name for your Python Wrapper entry point script in `setup.cfg`
 - Replace the source files with your own
 - Set GitHub action secrets for:
   - ANACONDA_TOKEN
