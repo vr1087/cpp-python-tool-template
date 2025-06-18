@@ -18,8 +18,14 @@ build:
     - CFLAGS
     - CXXFLAGS
   script: |
+    # On Linux aarch64 builds we saw undefined pthread symbols (e.g. pthread_join)
+    # unless we compile and link with -pthread. Autotools (HTSlib) only picks up
+    # Conda headers and flags if CFLAGS/CXXFLAGS and LDFLAGS are exported.
+    # On macOS x86 (SDK < 10.15), Clang’s availability annotations block newer
+    # libc++ symbols (std::filesystem::path, etc.), so we disable those checks
+    # with -D_LIBCPP_DISABLE_AVAILABILITY
     export CFLAGS="-pthread -I${PREFIX}/include $CFLAGS"
-    export CXXFLAGS="-pthread -I${PREFIX}/include $CXXFLAGS"
+    export CXXFLAGS="-pthread -I${PREFIX}/include $CXXFLAGS -D_LIBCPP_DISABLE_AVAILABILITY"
     export LDFLAGS="-pthread ${LDFLAGS}"
     
     cmake -S cpp/all -B build -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXE_LINKER_FLAGS="$LDFLAGS"
