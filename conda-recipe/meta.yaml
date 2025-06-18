@@ -1,8 +1,8 @@
-{% set REPO_NAME   = environ.get('REPO_NAME',  'aligncount') %}
-{% set VERSION     = environ.get('VERSION',    '0.2.81') %}
-{% set TAR_URL     = environ.get('TAR_URL',    'https://github.com/vr1087/cpp-python-tool-template/archive/refs/tags/v0.2.81.tar.gz') %}
-{% set SHA256      = environ.get('SHA256',     'b1e10ade2ae4b183d45a554ae9753b925d601aa56cfad797a6a143e873303105') %}
-{% set REPO_HOME   = environ.get('REPO_HOME',  'https://github.com/vr1087/cpp-python-tool-template') %}
+{% set REPO_NAME   = environ.get('REPO_NAME',  '') %}
+{% set VERSION     = environ.get('VERSION',    '') %}
+{% set TAR_URL     = environ.get('TAR_URL',    '') %}
+{% set SHA256      = environ.get('SHA256',     '') %}
+{% set REPO_HOME   = environ.get('REPO_HOME',  '') %}
 
 package:
   name: {{ REPO_NAME }}
@@ -18,12 +18,14 @@ build:
     - CFLAGS
     - CXXFLAGS
   script: |
+    
     # On Linux aarch64 builds we saw undefined pthread symbols (e.g. pthread_join)
     # unless we compile and link with -pthread. Autotools (HTSlib) only picks up
     # Conda headers and flags if CFLAGS/CXXFLAGS and LDFLAGS are exported.
     # On macOS x86 (SDK < 10.15), Clang’s availability annotations block newer
     # libc++ symbols (std::filesystem::path, etc.), so we disable those checks
     # with -D_LIBCPP_DISABLE_AVAILABILITY
+    
     export CFLAGS="-pthread -I${PREFIX}/include $CFLAGS"
     export CXXFLAGS="-pthread -I${PREFIX}/include $CXXFLAGS -D_LIBCPP_DISABLE_AVAILABILITY"
     export LDFLAGS="-pthread ${LDFLAGS}"
