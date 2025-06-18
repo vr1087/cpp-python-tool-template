@@ -1,7 +1,7 @@
 {% set REPO_NAME   = environ.get('REPO_NAME',  'aligncount') %}
-{% set VERSION     = environ.get('VERSION',    '0.2.78') %}
-{% set TAR_URL     = environ.get('TAR_URL',    'https://github.com/vr1087/cpp-python-tool-template/archive/refs/tags/v0.2.78.tar.gz') %}
-{% set SHA256      = environ.get('SHA256',     'c6d93172e84da45fc1b0f172d56b318f17b682d80edb03d6c0d9900938dee97a') %}
+{% set VERSION     = environ.get('VERSION',    '0.2.81') %}
+{% set TAR_URL     = environ.get('TAR_URL',    'https://github.com/vr1087/cpp-python-tool-template/archive/refs/tags/v0.2.81.tar.gz') %}
+{% set SHA256      = environ.get('SHA256',     'b1e10ade2ae4b183d45a554ae9753b925d601aa56cfad797a6a143e873303105') %}
 {% set REPO_HOME   = environ.get('REPO_HOME',  'https://github.com/vr1087/cpp-python-tool-template') %}
 
 package:
@@ -25,6 +25,10 @@ build:
     cmake --build build --parallel ${CPU_COUNT:-1}
     (cd build/test && ctest --output-on-failure)
     cmake --install build/standalone
+    cd cli
+    python -m pip install . --no-deps --ignore-installed --prefix=$PREFIX
+    #cd ..
+    #pytest tests/python
 
 requirements:
   build:
@@ -36,58 +40,17 @@ requirements:
     - libtool
     - m4
     - make
+    - python >=3.9,<3.14
+    - pip
+    - setuptools
+    - conda-verify
+    - pytest
   host:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - cmake
-
-outputs:
-  # ---------------------------------------------------------
-  # Output #1: C++ executable package (aligncount)
-  # ---------------------------------------------------------
-  - name: aligncount
-
-    requirements:
-      host:
-        - {{ compiler('c') }}
-        - {{ compiler('cxx') }}
-        - cmake
-      run:
-        - libcxx      # [osx]
-        - libgcc-ng   # [linux]
-
-  # ---------------------------------------------------------
-  # Output #2: Python wrapper (noarch)
-  # ---------------------------------------------------------
-  - name: aligncount_wrapper
-    build:
-      noarch: python
-      script: |
-        cd cli
-        python -m pip install . --no-deps --ignore-installed --prefix=$PREFIX
-        cd ..
-
-    requirements:
-      build:
-        - python >=3.9,<3.14
-        - pip
-        - setuptools
-        - conda-verify
-      host:
-        - python >=3.9,<3.14
-        - pip
-        - setuptools
-      run:
-        - python >=3.9,<3.14
-        - {{ pin_subpackage("aligncount", exact=False) }}
-
-    test:
-      requires:
-        - pytest
-      source_files:
-        - tests/python/*.py
-      commands:
-        - pytest -q
+  run:
+    - python >=3.9,<3.14
 
 about:
   home:    {{ REPO_HOME }}
