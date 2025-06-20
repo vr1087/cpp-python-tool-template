@@ -15,14 +15,15 @@ Template Repo Combines:
 
 ## How to use this template
 - Use this repo [as a template](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template).
-- Replace all occurrences of "Aligncount" with the name of your project in the relevant CMakeLists.txt under `cpp/`.
-  - Capitalization matters here: `Aligncount` means the name of the project, while `aligncount` is used in file names.
-  - Remember to rename the `include/aligncount` directory to use your project's lowercase name and update all relevant `#include`s accordingly.
-  - Replace instances of ALIGNCOUNT_VERSION with `[YOUR_PROJECT_NAME]_VERSION`
-  - Set the name of the C++ executable (e.g. aligncount_cpp) to your liking in `cpp/standalone/CMakeLists.txt`
-- Set the expected name of the C++ executable in the `cpp_standalone.yml` workflow.
-- Set the name for your published docker image in `docker_release.yml`
-- Set the name for your Python Wrapper entry point script in `setup.cfg`
+- Search for and replace every case‑sensitive instance of the following strings throughout the repository:
+  - Aligncount -> Mytool
+  - aligncount -> mytool
+  - ALIGNCOUNT_VERSION -> MYTOOL_VERSION
+- Rename the following files and directories:
+  - cpp/include/aligncount/aligncount.h -> cpp/include/mytool/mytool.h
+  - cpp/source/aligncount.cpp -> cpp/source/mytool.cpp
+  - cpp/test/source/aligncount.cpp -> cpp/test/source/mytool.cpp
+- Test your changes by installing, building the docker image, and running unit tests (see below)
 - Replace the source files with your own
 - Set GitHub action secrets for:
   - ANACONDA_TOKEN
